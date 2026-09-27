@@ -1,17 +1,43 @@
-<?php
-$tituloPagina = 'engineering-labor — Laboratorio de Ingeniería';
-require __DIR__ . '/includes/header.php';
-require __DIR__ . '/includes/nav.php';
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>engineering-labor — Laboratorio de Ingeniería</title>
+    <meta name="description" content="Laboratorio de ingeniería personal: proyectos de desarrollo de software, datos y ciberseguridad.">
 
-$proyectos = require __DIR__ . '/data/projects.php';
-$categorias = array_values(array_unique(array_column($proyectos, 'categoria')));
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-$estadoLabels = [
-    'planificado' => ['texto' => 'Planificado', 'clase' => 'text-bg-secondary'],
-    'en-desarrollo' => ['texto' => 'En desarrollo', 'clase' => 'text-bg-warning'],
-    'completado' => ['texto' => 'Completado', 'clase' => 'text-bg-success'],
-];
-?>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top py-3">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" href="#inicio">
+            <i class="bi bi-cpu me-2"></i>engineering-labor
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Abrir menú">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="#proyectos">Proyectos</a></li>
+                <li class="nav-item"><a class="nav-link" href="#sobre-mi">Sobre mí</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+                <li class="nav-item">
+                    <button id="themeToggle" class="btn btn-sm btn-outline-secondary ms-lg-2" type="button" aria-label="Cambiar tema">
+                        <i class="bi bi-sun-fill"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
 <header id="inicio" class="hero py-5">
     <div class="container py-5">
@@ -42,7 +68,7 @@ Ingeniero &amp; desarrollador
 PHP · JavaScript · Bootstrap · MySQL
 
 &gt; status
-Construyendo <?= count($proyectos) ?> proyecto(s)...</code></pre>
+Construyendo <span id="terminalTotal">0</span> proyecto(s)...</code></pre>
                 </div>
             </div>
         </div>
@@ -56,45 +82,10 @@ Construyendo <?= count($proyectos) ?> proyecto(s)...</code></pre>
                 <h2 class="fw-bold mb-1">Proyectos</h2>
                 <p class="text-secondary mb-0">Cosas que estoy construyendo o planeando construir.</p>
             </div>
-            <div class="btn-group flex-wrap" role="group" aria-label="Filtrar por categoría" id="filtroCategorias">
-                <button type="button" class="btn btn-sm btn-primary" data-categoria="todos">Todos</button>
-                <?php foreach ($categorias as $categoria): ?>
-                    <button type="button" class="btn btn-sm btn-outline-primary" data-categoria="<?= htmlspecialchars($categoria) ?>">
-                        <?= htmlspecialchars($categoria) ?>
-                    </button>
-                <?php endforeach; ?>
-            </div>
+            <div class="btn-group flex-wrap" role="group" aria-label="Filtrar por categoría" id="filtroCategorias"></div>
         </div>
 
-        <div class="row g-4" id="listaProyectos">
-            <?php foreach ($proyectos as $proyecto): ?>
-                <?php $estado = $estadoLabels[$proyecto['estado']] ?? $estadoLabels['planificado']; ?>
-                <div class="col-md-6 col-lg-4 proyecto-item" data-categoria="<?= htmlspecialchars($proyecto['categoria']) ?>">
-                    <div class="card h-100 project-card">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div class="icon-badge">
-                                    <i class="bi <?= htmlspecialchars($proyecto['icono']) ?>"></i>
-                                </div>
-                                <span class="badge <?= $estado['clase'] ?>"><?= $estado['texto'] ?></span>
-                            </div>
-                            <h3 class="h5 card-title"><?= htmlspecialchars($proyecto['nombre']) ?></h3>
-                            <p class="card-text text-secondary flex-grow-1"><?= htmlspecialchars($proyecto['descripcion']) ?></p>
-                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                <?php foreach ($proyecto['tecnologias'] as $tecnologia): ?>
-                                    <span class="badge tech-badge"><?= htmlspecialchars($tecnologia) ?></span>
-                                <?php endforeach; ?>
-                            </div>
-                            <?php if ($proyecto['enlace']): ?>
-                                <a href="<?= htmlspecialchars($proyecto['enlace']) ?>" class="btn btn-sm btn-outline-primary mt-auto">Ver proyecto</a>
-                            <?php else: ?>
-                                <button class="btn btn-sm btn-outline-secondary mt-auto" disabled>Próximamente</button>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+        <div class="row g-4" id="listaProyectos"></div>
     </div>
 </section>
 
@@ -113,13 +104,13 @@ Construyendo <?= count($proyectos) ?> proyecto(s)...</code></pre>
                 <div class="row g-3">
                     <div class="col-6">
                         <div class="stat-card p-3 rounded-3 text-center">
-                            <div class="fs-3 fw-bold"><?= count($proyectos) ?></div>
+                            <div class="fs-3 fw-bold" id="statProyectos">0</div>
                             <div class="text-secondary small">Proyectos en el lab</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="stat-card p-3 rounded-3 text-center">
-                            <div class="fs-3 fw-bold"><?= count($categorias) ?></div>
+                            <div class="fs-3 fw-bold" id="statAreas">0</div>
                             <div class="text-secondary small">Áreas exploradas</div>
                         </div>
                     </div>
@@ -139,4 +130,19 @@ Construyendo <?= count($proyectos) ?> proyecto(s)...</code></pre>
     </div>
 </section>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<footer class="py-4 border-top">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+        <span class="text-secondary small">&copy; <span id="anioFooter">2026</span> engineering-labor — proyecto personal.</span>
+        <div class="d-flex gap-3">
+            <a href="https://github.com/JAlessandro217" target="_blank" rel="noopener" class="text-secondary" aria-label="GitHub">
+                <i class="bi bi-github fs-5"></i>
+            </a>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/projects-data.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

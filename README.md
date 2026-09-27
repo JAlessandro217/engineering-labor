@@ -4,17 +4,31 @@ Laboratorio de ingeniería personal: un sitio donde voy mostrando y documentando
 desarrollo de software a medida que los construyo (sistemas de gestión, análisis de datos,
 ciberseguridad, etc.).
 
+Esta landing es un sitio estático (HTML/CSS/JS + Bootstrap), pensado para desplegarse gratis en
+AWS Amplify Hosting. Los proyectos reales que requieran backend (PHP + MySQL) — ERP, gestor de
+tareas, SIEM, etc. — se desarrollan por separado y se enlazan desde aquí cuando estén listos.
+
 ## Stack
 
-- PHP
-- JavaScript
-- Bootstrap 5
+- HTML / JavaScript / Bootstrap 5 (landing)
+- PHP + MySQL (para los proyectos individuales que se vayan agregando)
 
-## Ejecutar en local (XAMPP)
+## Ejecutar en local
 
-1. Clona o copia este repositorio dentro de `htdocs` (por ejemplo `C:\xampp\htdocs\engineering-labor`).
-2. Inicia Apache desde el panel de XAMPP.
-3. Abre `http://localhost/engineering-labor/index.php` en el navegador.
+No requiere servidor: basta con abrir `index.html` en el navegador, o servirlo con cualquier
+servidor estático, por ejemplo:
+
+```bash
+php -S localhost:8000
+```
+
+y visitar `http://localhost:8000`.
+
+## Desplegar en AWS Amplify
+
+1. En la consola de Amplify, **New app → Host web app**, conecta este repositorio de GitHub.
+2. Amplify detecta `amplify.yml` (sitio estático, sin build) y despliega `index.html` tal cual.
+3. Cada push a `main` vuelve a desplegar automáticamente.
 
 ## Estructura
 
@@ -22,14 +36,12 @@ ciberseguridad, etc.).
 engineering-labor/
 ├── assets/
 │   ├── css/style.css
-│   └── js/main.js
-├── data/
-│   └── projects.php      # lista de proyectos mostrados en la home
-├── includes/
-│   ├── header.php
-│   ├── nav.php
-│   └── footer.php
-└── index.php              # página principal
+│   └── js/
+│       ├── projects-data.js   # lista de proyectos mostrados en la home
+│       └── main.js            # render de tarjetas, filtros y tema
+├── amplify.yml                # configuración de build para Amplify Hosting
+└── index.html                 # página principal
 ```
 
-Para agregar un proyecto nuevo a la home, se añade una entrada al arreglo en `data/projects.php`.
+Para agregar un proyecto nuevo a la home, se añade una entrada al arreglo en
+`assets/js/projects-data.js`.
